@@ -7,13 +7,15 @@ import backflipIcon from "./assets/backflip.png";
 import plancheIcon from "./assets/planche.png";
 import frontflipIcon from "./assets/frontflip.png";
 import frontlever from "./assets/frontlever.png";
+import BigCard from "./components/BigCard.jsx";
+import Stats from "./components/Stats.jsx";
 
 const App = () => {
     return (
         <main className="flex">
             <Sidebar />
             <section className= "flex flex-col w-[55%] bg-gray-900 border-r border-gray-600">
-                <Search className="w-full"/>x
+                <Search className="w-full"/>
                 <Welcome name="Matias"/>
                 <div className="flex justify-between items-center mt-6 p-5">
                     <h1 className="text-white text-2xl">Recent Progress</h1>
@@ -30,7 +32,10 @@ const App = () => {
                 <div className="flex flex-col gap-4 ml-5 p-5 w-fit border-2 border-gray-600 rounded-2xl bg-gray-800">
                     <Calendar />
                 </div>
-
+            </section>
+            <section className="w-[45%]">
+               <BigCard trick="Backflip" image = {backflipIcon} progress="80" difficulty="Easy" description="Learn to flip your body back" step1="Jump and tuck" step2="Look up" step3="Look down" step4="Look straight ahead"/>
+                <Stats />
             </section>
         </main>
     )

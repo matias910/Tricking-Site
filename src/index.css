@@ -11,3 +11,7 @@ h2,
 h3 {
     font-family: 'Montserrat', Arial, sans-serif;
 }
+
+button{
+    cursor: pointer;
+}
