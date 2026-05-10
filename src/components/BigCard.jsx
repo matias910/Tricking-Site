@@ -60,7 +60,7 @@ const BigCard = ({trick, image, progress, difficulty, description, step1, step2,
                 <li className="text-white border-2 border-gray-600 rounded-2xl p-2">May 19 - need more height - Okay</li>
                 <li className="text-white border-2 border-gray-600 rounded-2xl p-2">May 17 - better landings - Good</li>
             </ul>
-            <button className="bg-green-600 text-white rounded-[6px]">Log Training</button>
+            <button className="bg-green-600 text-white rounded-[6px] h-12">Log Training</button>
         </div>
     )
 }

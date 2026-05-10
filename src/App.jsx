@@ -29,13 +29,17 @@ const App = () => {
                         <TrickCard name="Frontlever" image = {frontlever} progress="50%"/>
                     </ul>
                 </div>
-                <div className="flex flex-col gap-4 ml-5 p-5 w-fit border-2 border-gray-600 rounded-2xl bg-gray-800">
-                    <Calendar />
+                <div className="flex justify-center items-center mt-3 p-2">
+                    <div className="flex flex-col gap-4  p-5 w-fit border-2 border-gray-600 rounded-2xl bg-gray-800">
+                        <Calendar />
+                    </div>
+                    <div className="flex ml-5 p-5 w-fit border-2 border-gray-600 rounded-2xl bg-gray-800">
+                        <Stats />
+                    </div>
                 </div>
             </section>
             <section className="w-[45%]">
                <BigCard trick="Backflip" image = {backflipIcon} progress="80" difficulty="Easy" description="Learn to flip your body back" step1="Jump and tuck" step2="Look up" step3="Look down" step4="Look straight ahead"/>
-                <Stats />
             </section>
         </main>
     )
