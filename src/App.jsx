@@ -1,19 +1,89 @@
+import { useState } from 'react';
 import Sidebar from "./components/Sidebar.jsx";
 import Search from "./components/Search.jsx";
 import Welcome from "./components/Welcome.jsx";
 import TrickCard from "./components/TrickCard.jsx";
 import Calendar from "./components/Calendar.jsx";
+import displayIcon from "./assets/displayIcon.svg";
 import backflipIcon from "./assets/backflip.png";
 import plancheIcon from "./assets/planche.png";
 import frontflipIcon from "./assets/frontflip.png";
 import frontlever from "./assets/frontlever.png";
+import humanFlag from "./assets/humanFlag.png";
+import vSit from "./assets/vSit.png";
+import aerial from "./assets/aerial.png";
 import BigCard from "./components/BigCard.jsx";
 import Stats from "./components/Stats.jsx";
 
 const App = () => {
+
+    const tricks = [
+        {
+            name: "Backflip",
+            image: backflipIcon,
+            progress: "80",
+            difficulty: "Easy",
+            description: "Learn to flip your body back",
+            steps: ["Jump and tuck", "Look up", "Look down", "Look straight ahead"],
+        },
+        {
+            name: "Planche",
+            image: plancheIcon,
+            progress: "65",
+            difficulty: "Hard",
+            description: "Hold your body parallel to the ground",
+            steps: ["Lock your elbows", "Lean forward", "Keep your core tight", "Point your toes"],
+        },
+        {
+            name: "Frontflip",
+            image: frontflipIcon,
+            progress: "70",
+            difficulty: "Medium",
+            description: "Learn to flip your body forward",
+            steps: ["Jump up", "Tuck your knees", "Rotate forward", "Spot the ground"],
+        },
+        {
+            name: "Frontlever",
+            image: frontlever,
+            progress: "50",
+            difficulty: "Hard",
+            description: "Hold your body straight while hanging",
+            steps: ["Grip the bar", "Pull your shoulders down", "Keep your body straight", "Hold the position"],
+        },
+        {
+            name: "Human Flag",
+            image: humanFlag,
+            progress: "40",
+            difficulty: "Hard",
+            description: "Hold your body sideways on a pole",
+            steps: ["Set your hand position", "Push and pull", "Lift your legs", "Hold your body straight"],
+        },
+        {
+            name: "V-Sit",
+            image: vSit,
+            progress: "30",
+            difficulty: "Medium",
+            description: "Hold your legs high in a V shape",
+            steps: ["Sit on the floor", "Place your hands down", "Lift your hips", "Raise your legs"],
+        },
+        {
+            name: "Aerial",
+            image: aerial,
+            progress: "20",
+            difficulty: "Medium",
+            description: "Do a cartwheel without using your hands",
+            steps: ["Step into it", "Kick your back leg", "Drive your chest sideways", "Land controlled"],
+        },
+    ]
+    const [showSidebar, setShowSidebar] = useState(() => window.innerWidth >= 1024);
+    const [selectedTrick, setSelectedTrick] = useState(tricks[0]);
+
     return (
         <main className="flex">
-            <Sidebar />
+            {showSidebar && <Sidebar />}
+            <button onClick={() => setShowSidebar(!showSidebar) }>
+                <img src={displayIcon} alt="Display Icon" className="w-10 h-10 absolute top-5"/>
+            </button>
             <section className= "flex flex-col w-[55%] bg-gray-900 border-r border-gray-600">
                 <Search className="w-full"/>
                 <Welcome name="Matias"/>
@@ -22,24 +92,36 @@ const App = () => {
                     <button className= "p-2 text-gray-400 bg-gray-700 rounded-[6px] text-[12px]">View All</button>
                 </div>
                 <div className="flex flex-col gap-4 p-5">
-                    <ul className="flex gap-4">
-                        <TrickCard name="Backflip" image = {backflipIcon} progress="80%"/>
-                        <TrickCard name="Planche" image = {plancheIcon} progress="65%"/>
-                        <TrickCard name="Frontflip" image = {frontflipIcon} progress="70%"/>
-                        <TrickCard name="Frontlever" image = {frontlever} progress="50%"/>
+                    <ul className="flex gap-4 flex-wrap flex-1">
+                        {tricks.map((trick) => (
+                            <button key={trick.name} onClick={() => setSelectedTrick(trick)}>
+                                <TrickCard key={trick.name} {...trick} />
+                            </button>
+
+                        ))}
                     </ul>
                 </div>
-                <div className="flex justify-center items-center mt-3 p-2">
+                <div className="flex flex-wrap justify-center gap-4 md:gap-6 lg:gap-8 items-center mt-3 p-2">
                     <div className="flex flex-col gap-4  p-5 w-fit border-2 border-gray-600 rounded-2xl bg-gray-800">
                         <Calendar />
                     </div>
-                    <div className="flex ml-5 p-5 w-fit border-2 border-gray-600 rounded-2xl bg-gray-800">
+                    <div className="flex p-5 w-[22.6rem] border-2 border-gray-600 rounded-2xl bg-gray-800">
                         <Stats />
                     </div>
                 </div>
             </section>
             <section className="w-[45%]">
-               <BigCard trick="Backflip" image = {backflipIcon} progress="80" difficulty="Easy" description="Learn to flip your body back" step1="Jump and tuck" step2="Look up" step3="Look down" step4="Look straight ahead"/>
+               <BigCard
+                   trick={selectedTrick.name}
+                   image={selectedTrick.image}
+                   progress={selectedTrick.progress}
+                   difficulty={selectedTrick.difficulty}
+                   description={selectedTrick.description}
+                   step1={selectedTrick.steps[0]}
+                   step2={selectedTrick.steps[1]}
+                   step3={selectedTrick.steps[2]}
+                   step4={selectedTrick.steps[3]}
+               />
             </section>
         </main>
     )

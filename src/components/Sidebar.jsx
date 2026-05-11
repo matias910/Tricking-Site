@@ -34,6 +34,16 @@ const Profile = ({name, image, level}) => {
 }
 
 const Sidebar = () => {
+    const SideBarButtonsDisplay = [
+        {name: "Dashboard", image: dashboardIcon},
+        {name: "Tricks", image: tricksIcon},
+        {name: "Training", image: trainingIcon},
+        {name: "Progress", image: progressIcon},
+        {name: "Calendar", image: calendarIcon},
+        {name: "Stats", image: statsIcon},
+        {name: "Goals", image: goalsIcon},
+    ];
+
     return (
         <div className="flex flex-col gap-8 p-10 pl-8 bg-gray-950 w-1/6 font-stretch-100%">
             <div className="flex items-center gap-3 justify-center">
@@ -42,13 +52,9 @@ const Sidebar = () => {
             </div>
             <nav>
                 <ul className="flex flex-col gap-7 text-[18px]">
-                    <SidebarButtons name="Dashboard" image={dashboardIcon} />
-                    <SidebarButtons name="Tricks" image={tricksIcon} />
-                    <SidebarButtons name="Training" image={trainingIcon} />
-                    <SidebarButtons name="Progress" image={progressIcon} />
-                    <SidebarButtons name="Calendar" image={calendarIcon} />
-                    <SidebarButtons name="Stats" image={statsIcon} />
-                    <SidebarButtons name="Goals" image={goalsIcon} />
+                    {SideBarButtonsDisplay.map((button) => (
+                        <SidebarButtons {...button}/>
+                    ))}
                 </ul>
             </nav>
 
