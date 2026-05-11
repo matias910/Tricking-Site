@@ -1,11 +1,10 @@
-import backIcon from "../assets/back.svg";
-import moreIcon from "../assets/more.svg";
 import checkIcon from "../assets/check.svg";
 
 const ProgressBar = ({ value = 0, min = 0, max = 100, labelPosition = "right" }) => {
     const percentage = Math.min(Math.max(((value - min) / (max - min)) * 100, 0), 100);
 
     return (
+
         <div className="flex items-center gap-3 w-full">
             {labelPosition === "left" && (
                 <span className="text-white text-sm">{Math.round(percentage)}%</span>
@@ -26,21 +25,26 @@ const ProgressBar = ({ value = 0, min = 0, max = 100, labelPosition = "right" })
 };
 
 
+
 const BigCard = ({trick, image, progress, difficulty, description, step1, step2, step3, step4}) => {
+
+    const difficultyColor =
+        difficulty === "Easy"
+            ? "bg-green-900 text-green-400"
+            : difficulty === "Medium"
+            ? "bg-yellow-900 text-yellow-400"
+            : "bg-red-900 text-red-400";
+
     return (
-        <div className="flex flex-col gap-5 w-auto p-4">
-            <div className="flex justify-between items-center ">
-                <button className><img src={backIcon} alt="back icon"/></button>
-                <h1 className="text-white">{trick}</h1>
-                <button><img src={moreIcon} alt="more icon"/></button>
-            </div>
+
+    <div className="flex flex-col gap-5 w-auto p-4 h-auto mt-8">
+
             <div className="flex flex-row gap-2">
                 <img src={image} alt="Trick Icon" className="w-55 h-55 rounded-[6px]"/>
                 <div className="flex flex-col gap-2">
                     <h1 className="text-[28px] text-white">{trick}</h1>
-                    <h2 className="bg-green-900 text-green-400 w-min p-2 rounded-[12px]">{difficulty}</h2>
-                    <h2 className="text-white text-[12px]
-                    ">{description}</h2>
+                    <h2 className={`${difficultyColor} w-min p-2 rounded-[12px]`}>{difficulty}</h2>
+                    <h2 className="text-white text-[12px]">{description}</h2>
                     <h1 className="text-white">Your Progress:</h1>
                     < ProgressBar value={progress} min={0} max={100} labelPosition="left" />
                 </div>
