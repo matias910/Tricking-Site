@@ -12,7 +12,6 @@ import frontlever from "./assets/frontlever.png";
 import humanFlag from "./assets/humanFlag.png";
 import vSit from "./assets/vSit.png";
 import aerial from "./assets/aerial.png";
-import addIcon from "./assets/add.svg";
 import BigCard from "./components/BigCard.jsx";
 import Stats from "./components/Stats.jsx";
 
@@ -86,6 +85,9 @@ const App = () => {
     const [showSidebar, setShowSidebar] = useState(() => window.innerWidth >= 1024);
     const [selectedTrick, setSelectedTrick] = useState(tricks[0]);
     const [showBigCard, setShowBigCard] = useState(() => window.innerWidth >= 1024)
+    const [searchTerm, setSearchTerm] = useState("");
+    const filteredTricks = tricks.filter((trick) => trick.name.toLowerCase().includes(searchTerm.toLowerCase()));
+
 
     return (
         <main className="flex min-h-screen bg-gray-900 overflow-x-hidden">
@@ -98,20 +100,27 @@ const App = () => {
                 <img src={displayIcon} alt="Display Icon" className="w-10 h-10 absolute top-5"/>
             </button>
             <section className= "flex flex-1 flex-col min-w-0 bg-gray-900 border-r border-gray-600">
-                <Search className="w-full"/>
+                <Search searchTerm={searchTerm} setSearchTerm={setSearchTerm} className="w-full"/>
                 <Welcome name="Matias"/>
                 <div className="flex justify-between items-center mt-6 p-5">
                     <h1 className="text-white text-2xl">Recent Progress</h1>
-                    <button className= "p-2 text-gray-400 bg-gray-700 rounded-[6px] text-[12px]">View All</button>
+                    <button className= "p-2 text-gray-400 bg-gray-700 rounded-[6px] text-[12px]" onClick={() => setSearchTerm("")}>View All</button>
                 </div>
                 <div className="flex flex-col gap-4 p-5">
                     <ul className="flex gap-4 flex-wrap flex-1 ">
-                        {tricks.map((trick) => (
-                            <button className="transition-all duration-200 hover:scale-[1.2] hover:-translate-y-1 hover:shadow-lg" key={trick.name} onClick={() => setSelectedTrick(trick)}>
-                                <TrickCard key={trick.name} {...trick} />
-                            </button>
-
-                        ))}
+                        {filteredTricks.length > 0 ? (
+                            filteredTricks.map((trick) => (
+                                <button
+                                    className="transition-all duration-200 hover:scale-[1.2] hover:-translate-y-1 hover:shadow-lg"
+                                    key={trick.name}
+                                    onClick={() => setSelectedTrick(trick)}
+                                >
+                                    <TrickCard key={trick.name} {...trick} />
+                                </button>
+                            ))
+                        ) : (
+                            <p className="text-gray-400 italic">No tricks found matching "{searchTerm}"</p>
+                        )}
                     </ul>
                 </div>
                 <div className="flex flex-wrap justify-center gap-4 md:gap-6 lg:gap-8 items-center mt-3 p-2">
