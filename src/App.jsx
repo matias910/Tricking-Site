@@ -85,14 +85,19 @@ const App = () => {
     ]
     const [showSidebar, setShowSidebar] = useState(() => window.innerWidth >= 1024);
     const [selectedTrick, setSelectedTrick] = useState(tricks[0]);
+    const [showBigCard, setShowBigCard] = useState(() => window.innerWidth >= 1024)
 
     return (
-        <main className="flex">
-            {showSidebar && <Sidebar />}
+        <main className="flex min-h-screen bg-gray-900 overflow-x-hidden">
+            {showSidebar && (
+                <div className="transition-all duration-300 ease-in-out  bg-gray-900 border-r border-gray-600  ">
+                    <Sidebar />
+                </div>
+            )}
             <button onClick={() => setShowSidebar(!showSidebar) }>
                 <img src={displayIcon} alt="Display Icon" className="w-10 h-10 absolute top-5"/>
             </button>
-            <section className= "flex flex-col bg-gray-900 border-r border-gray-600">
+            <section className= "flex flex-1 flex-col min-w-0 bg-gray-900 border-r border-gray-600">
                 <Search className="w-full"/>
                 <Welcome name="Matias"/>
                 <div className="flex justify-between items-center mt-6 p-5">
@@ -100,9 +105,9 @@ const App = () => {
                     <button className= "p-2 text-gray-400 bg-gray-700 rounded-[6px] text-[12px]">View All</button>
                 </div>
                 <div className="flex flex-col gap-4 p-5">
-                    <ul className="flex gap-4 flex-wrap flex-1">
+                    <ul className="flex gap-4 flex-wrap flex-1 ">
                         {tricks.map((trick) => (
-                            <button key={trick.name} onClick={() => setSelectedTrick(trick)}>
+                            <button className="transition-all duration-200 hover:scale-[1.2] hover:-translate-y-1 hover:shadow-lg" key={trick.name} onClick={() => setSelectedTrick(trick)}>
                                 <TrickCard key={trick.name} {...trick} />
                             </button>
 
@@ -118,8 +123,11 @@ const App = () => {
                     </div>
                 </div>
             </section>
-            <section className="w-[45%]">
-                <BigCard
+                <button onClick={() => setShowBigCard(!showBigCard)}>
+                    <img src={displayIcon} alt="DisplayIcon" className="w-10 h-10 absolute top-5"/>
+                </button>
+                {showBigCard && <section className="xl:block w-[45%]">
+                    <BigCard
                     trick={selectedTrick.name}
                     image={selectedTrick.image}
                     progress={selectedTrick.progress}
@@ -130,7 +138,7 @@ const App = () => {
                     step3={selectedTrick.steps[2]}
                     step4={selectedTrick.steps[3]}
                 />
-            </section>
+                </section>}
         </main>
     )
 }

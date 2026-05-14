@@ -37,10 +37,10 @@ const BigCard = ({trick, image, progress, difficulty, description, step1, step2,
 
     return (
 
-    <div className="flex flex-col gap-5 w-auto p-4 h-auto mt-8">
+    <div className="flex flex-col  gap-5 w-auto p-4 h-auto mt-8">
 
             <div className="flex flex-row gap-2">
-                <img src={image} alt="Trick Icon" className="w-55 h-55 rounded-[6px]"/>
+                <img src={image} alt="Trick Icon" className="w-full sm:w-48 md:w-55 aspect-square object-cover rounded-[6px]"/>
                 <div className="flex flex-col gap-2">
                     <h1 className="text-[28px] text-white">{trick}</h1>
                     <h2 className={`${difficultyColor} w-min p-2 rounded-[12px]`}>{difficulty}</h2>
