@@ -45,7 +45,7 @@ const Sidebar = () => {
     ];
 
     return (
-        <div className="flex flex-col gap-8 p-10 pl-8 bg-gray-950 h-max font-stretch-100%">
+        <div className="flex flex-col h-full gap-8 p-10 pl-8 bg-gray-950 font-stretch-100%">
             <div className="flex items-center gap-3 justify-center">
                 <h1 className="text-white">UNLOCK</h1>
                 <img src={unlockIcon} alt="Unlock icon" />

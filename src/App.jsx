@@ -133,7 +133,7 @@ const App = () => {
                 </div>
             </section>
                 <button onClick={() => setShowBigCard(!showBigCard)}>
-                    <img src={displayIcon} alt="DisplayIcon" className="w-10 h-10 absolute top-5"/>
+                    <img src={displayIcon} alt="DisplayIcon" className="w-10 h-10 absolute top-5 right-5"/>
                 </button>
                 {showBigCard && <section className="xl:block w-[45%]">
                     <BigCard
