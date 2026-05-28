@@ -1,0 +1,340 @@
+import express from 'express';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import tricksRouter from './routes/tricks.js';
+
+dotenv.config();
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+app.use(cors());
+app.use(express.json());
+
+app.use('/tricks', tricksRouter);
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+
+
+
+/*
+const express = require('express');
+const mysql = require('mysql2');
+const cors = require('cors');
+
+const app = express();
+app.use(express.json());
+app.use(cors());
+
+// conexion a la base de datos
+const db = mysql.createConnection({
+  host: 'localhost',
+  user: 'root',
+  password: '',
+  database: 'torneos_futbol'
+});
+
+db.connect((err) => {
+  if (err) { console.error('Error conectando a MariaDB:', err); return; }
+  console.log('Conectado a MariaDB ✓');
+});
+
+// ─── EQUIPOS ────────────────────────────────────────────────────────────────
+
+app.get('/api/equipos', (req, res) => {
+  db.query('SELECT * FROM equipo', (err, results) => {
+    if (err) return res.status(500).send(err);
+    res.json(results);
+  });
+});
+
+app.post('/api/equipos', (req, res) => {
+  const { nombre, ciudad, año_fundacion, director_tecnico } = req.body;
+  db.query(
+    'INSERT INTO equipo (nombre, ciudad, año_fundacion, director_tecnico) VALUES (?, ?, ?, ?)',
+    [nombre, ciudad, año_fundacion, director_tecnico],
+    (err, result) => {
+      if (err) return res.status(500).send(err);
+      res.json({ message: 'Equipo creado', id: result.insertId });
+    }
+  );
+});
+
+app.put('/api/equipos/:id', (req, res) => {
+  const { nombre, ciudad, año_fundacion, director_tecnico } = req.body;
+  db.query(
+    'UPDATE equipo SET nombre=?, ciudad=?, año_fundacion=?, director_tecnico=? WHERE id_equipo=?',
+    [nombre, ciudad, año_fundacion, director_tecnico, req.params.id],
+    (err) => {
+      if (err) return res.status(500).send(err);
+      res.json({ message: 'Equipo actualizado' });
+    }
+  );
+});
+
+app.delete('/api/equipos/:id', (req, res) => {
+  db.query('DELETE FROM equipo WHERE id_equipo=?', [req.params.id], (err) => {
+    if (err) return res.status(500).send(err);
+    res.json({ message: 'Equipo eliminado' });
+  });
+});
+
+// ─── JUGADORES ───────────────────────────────────────────────────────────────
+
+app.get('/api/jugadores', (req, res) => {
+  db.query(`
+    SELECT j.id_persona, p.nombre, p.apellidos, j.posicion, j.numero,
+           j.fecha_nacimiento, j.id_equipo, e.nombre AS equipo
+    FROM jugador j
+    JOIN persona p ON j.id_persona = p.id_persona
+    JOIN equipo e ON j.id_equipo = e.id_equipo
+  `, (err, results) => {
+    if (err) return res.status(500).send(err);
+    res.json(results);
+  });
+});
+
+app.post('/api/jugadores', (req, res) => {
+  const { nombre, apellidos, posicion, numero, fecha_nacimiento, id_equipo } = req.body;
+  db.query(
+    'INSERT INTO persona (nombre, apellidos) VALUES (?, ?)',
+    [nombre, apellidos],
+    (err, result) => {
+      if (err) return res.status(500).send(err);
+      const id_persona = result.insertId;
+      db.query(
+        'INSERT INTO jugador (id_persona, id_equipo, posicion, numero, fecha_nacimiento) VALUES (?, ?, ?, ?, ?)',
+        [id_persona, id_equipo, posicion, numero, fecha_nacimiento],
+        (err2) => {
+          if (err2) return res.status(500).send(err2);
+          res.json({ message: 'Jugador creado', id: id_persona });
+        }
+      );
+    }
+  );
+});
+
+app.put('/api/jugadores/:id', (req, res) => {
+  const { nombre, apellidos, posicion, numero, fecha_nacimiento, id_equipo } = req.body;
+  db.query(
+    'UPDATE persona SET nombre=?, apellidos=? WHERE id_persona=?',
+    [nombre, apellidos, req.params.id],
+    (err) => {
+      if (err) return res.status(500).send(err);
+      db.query(
+        'UPDATE jugador SET posicion=?, numero=?, fecha_nacimiento=?, id_equipo=? WHERE id_persona=?',
+        [posicion, numero, fecha_nacimiento, id_equipo, req.params.id],
+        (err2) => {
+          if (err2) return res.status(500).send(err2);
+          res.json({ message: 'Jugador actualizado' });
+        }
+      );
+    }
+  );
+});
+
+app.delete('/api/jugadores/:id', (req, res) => {
+  db.query('DELETE FROM jugador WHERE id_persona=?', [req.params.id], (err) => {
+    if (err) return res.status(500).send(err);
+    db.query('DELETE FROM persona WHERE id_persona=?', [req.params.id], (err2) => {
+      if (err2) return res.status(500).send(err2);
+      res.json({ message: 'Jugador eliminado' });
+    });
+  });
+});
+
+// ─── PARTIDOS ────────────────────────────────────────────────────────────────
+
+app.get('/api/partidos', (req, res) => {
+    db.query(`
+        SELECT p.id_partido, p.fecha, p.duracion, p.marcador, p.num_espectadores,
+               el.nombre AS equipo_local, ev.nombre AS equipo_visitante,
+               est.nombre AS estadio, t.nombre AS torneo,
+               CONCAT(per.nombre, ' ', per.apellidos) AS arbitro
+        FROM partido p
+                 JOIN equipo el ON p.id_equipo_local = el.id_equipo
+                 JOIN equipo ev ON p.id_equipo_visitante = ev.id_equipo
+                 JOIN estadio est ON p.id_estadio = est.id_estadio
+                 JOIN torneo t ON p.id_torneo = t.id_torneo
+                 LEFT JOIN arbitro a ON p.id_arbitro = a.id_persona
+                 LEFT JOIN persona per ON a.id_persona = per.id_persona
+    `, (err, results) => {
+        if (err) return res.status(500).send(err);
+        res.json(results);
+    });
+});
+
+app.post('/api/partidos', (req, res) => {
+  const { fecha, duracion, marcador, num_espectadores, id_estadio, id_equipo_local, id_equipo_visitante, id_torneo } = req.body;
+  db.query(
+    'INSERT INTO partido (fecha, duracion, marcador, num_espectadores, id_estadio, id_equipo_local, id_equipo_visitante, id_torneo) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+    [fecha, duracion, marcador, num_espectadores, id_estadio, id_equipo_local, id_equipo_visitante, id_torneo],
+    (err, result) => {
+      if (err) return res.status(500).send(err);
+      res.json({ message: 'Partido creado', id: result.insertId });
+    }
+  );
+});
+
+app.put('/api/partidos/:id', (req, res) => {
+  const { fecha, duracion, marcador, num_espectadores, id_estadio, id_equipo_local, id_equipo_visitante, id_torneo } = req.body;
+  db.query(
+    'UPDATE partido SET fecha=?, duracion=?, marcador=?, num_espectadores=?, id_estadio=?, id_equipo_local=?, id_equipo_visitante=?, id_torneo=? WHERE id_partido=?',
+    [fecha, duracion, marcador, num_espectadores, id_estadio, id_equipo_local, id_equipo_visitante, id_torneo, req.params.id],
+    (err) => {
+      if (err) return res.status(500).send(err);
+      res.json({ message: 'Partido actualizado' });
+    }
+  );
+});
+
+app.delete('/api/partidos/:id', (req, res) => {
+  db.query('DELETE FROM partido WHERE id_partido=?', [req.params.id], (err) => {
+    if (err) return res.status(500).send(err);
+    res.json({ message: 'Partido eliminado' });
+  });
+});
+
+app.post('/api/estadios', (req, res) => {
+    const { nombre, ubicacion, capacidad, tipo_superficie } = req.body;
+    db.query('INSERT INTO estadio (nombre, ubicacion, capacidad, tipo_superficie) VALUES (?, ?, ?, ?)',
+        [nombre, ubicacion, capacidad, tipo_superficie], (err, result) => {
+            if (err) return res.status(500).send(err);
+            res.json({ message: 'Estadio creado', id: result.insertId });
+        });
+});
+
+app.put('/api/estadios/:id', (req, res) => {
+    const { nombre, ubicacion, capacidad, tipo_superficie } = req.body;
+    db.query('UPDATE estadio SET nombre=?, ubicacion=?, capacidad=?, tipo_superficie=? WHERE id_estadio=?',
+        [nombre, ubicacion, capacidad, tipo_superficie, req.params.id], (err) => {
+            if (err) return res.status(500).send(err);
+            res.json({ message: 'Estadio actualizado' });
+        });
+});
+
+app.delete('/api/estadios/:id', (req, res) => {
+    db.query('DELETE FROM estadio WHERE id_estadio=?', [req.params.id], (err) => {
+        if (err) return res.status(500).send(err);
+        res.json({ message: 'Estadio eliminado' });
+    });
+});
+
+// ─── FUNCIÓN: partidos jugados por equipo en torneo ──────────────────────────
+
+app.get('/api/funcion/partidos-jugados/:id_equipo/:id_torneo', (req, res) => {
+  db.query(
+    'SELECT partidos_jugados(?, ?) AS total',
+    [req.params.id_equipo, req.params.id_torneo],
+    (err, results) => {
+      if (err) return res.status(500).send(err);
+      res.json(results[0]);
+    }
+  );
+});
+
+// ─── PROCEDIMIENTO: partidos de un torneo ────────────────────────────────────
+
+app.get('/api/procedimiento/partidos-torneo/:id_torneo', (req, res) => {
+  db.query(
+    'CALL partidos_por_torneo(?)',
+    [req.params.id_torneo],
+    (err, results) => {
+      if (err) return res.status(500).send(err);
+      res.json(results[0]);
+    }
+  );
+});
+
+app.get('/api/estadios', (req, res) => {
+    db.query('SELECT * FROM estadio', (err, results) => {
+        if (err) return res.status(500).send(err);
+        res.json(results);
+    });
+});
+
+app.get('/api/torneos', (req, res) => {
+    db.query('SELECT * FROM torneo', (err, results) => {
+        if (err) return res.status(500).send(err);
+        res.json(results);
+    });
+});
+
+app.post('/api/torneos', (req, res) => {
+    const { nombre, categoria, año_edicion } = req.body;
+    db.query('INSERT INTO torneo (nombre, categoria, año_edicion) VALUES (?, ?, ?)',
+        [nombre, categoria, año_edicion], (err, result) => {
+            if (err) return res.status(500).send(err);
+            res.json({ message: 'Torneo creado', id: result.insertId });
+        });
+});
+
+app.put('/api/torneos/:id', (req, res) => {
+    const { nombre, categoria, año_edicion } = req.body;
+    db.query('UPDATE torneo SET nombre=?, categoria=?, año_edicion=? WHERE id_torneo=?',
+        [nombre, categoria, año_edicion, req.params.id], (err) => {
+            if (err) return res.status(500).send(err);
+            res.json({ message: 'Torneo actualizado' });
+        });
+});
+
+app.delete('/api/torneos/:id', (req, res) => {
+    db.query('DELETE FROM torneo WHERE id_torneo=?', [req.params.id], (err) => {
+        if (err) return res.status(500).send(err);
+        res.json({ message: 'Torneo eliminado' });
+    });
+});
+// FUNCION: partidos jugados en un estadio
+app.get('/api/funcion/partidos-estadio/:id_estadio', (req, res) => {
+    db.query(`
+    SELECT
+      p.id_partido,
+      p.fecha,
+      p.marcador,
+      e_local.nombre AS equipo_local,
+      e_visitante.nombre AS equipo_visitante,
+      t.nombre AS torneo,
+      CONCAT(per.nombre, ' ', per.apellidos) AS arbitro
+    FROM partido p
+    JOIN equipo e_local ON p.id_equipo_local = e_local.id_equipo
+    JOIN equipo e_visitante ON p.id_equipo_visitante = e_visitante.id_equipo
+    JOIN torneo t ON p.id_torneo = t.id_torneo
+    LEFT JOIN arbitro a ON p.id_arbitro = a.id_persona
+    LEFT JOIN persona per ON a.id_persona = per.id_persona
+    WHERE p.id_estadio = ?
+    ORDER BY p.id_partido ASC
+  `, [req.params.id_estadio], (err, results) => {
+        if (err) return res.status(500).send(err);
+        res.json(results);
+    });
+});
+
+// FUNCION: partidos jugados por equipo en torneo + detalle
+app.get('/api/funcion/partidos-jugados-detalle/:id_equipo/:id_torneo', (req, res) => {
+    db.query(`
+    SELECT
+      p.id_partido,
+      p.fecha,
+      p.marcador,
+      e_local.nombre AS equipo_local,
+      e_visitante.nombre AS equipo_visitante,
+      est.nombre AS estadio,
+      CONCAT(per.nombre, ' ', per.apellidos) AS arbitro
+    FROM partido p
+    JOIN equipo e_local ON p.id_equipo_local = e_local.id_equipo
+    JOIN equipo e_visitante ON p.id_equipo_visitante = e_visitante.id_equipo
+    JOIN estadio est ON p.id_estadio = est.id_estadio
+    LEFT JOIN arbitro a ON p.id_arbitro = a.id_persona
+    LEFT JOIN persona per ON a.id_persona = per.id_persona
+    WHERE p.id_torneo = ?
+    AND (p.id_equipo_local = ? OR p.id_equipo_visitante = ?)
+    ORDER BY p.id_partido ASC
+  `, [req.params.id_torneo, req.params.id_equipo, req.params.id_equipo], (err, results) => {
+        if (err) return res.status(500).send(err);
+        res.json(results);
+    });
+});
+
+app.listen(5000, () => console.log('Backend corriendo en http://localhost:5000'));
+
+ */

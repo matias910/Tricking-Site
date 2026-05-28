@@ -5,13 +5,6 @@ import Welcome from "./components/Welcome.jsx";
 import TrickCard from "./components/TrickCard.jsx";
 import Calendar from "./components/Calendar.jsx";
 import displayIcon from "./assets/displayIcon.svg";
-import backflipIcon from "./assets/backflip.png";
-import plancheIcon from "./assets/planche.png";
-import frontflipIcon from "./assets/frontflip.png";
-import frontlever from "./assets/frontlever.png";
-import humanFlag from "./assets/humanFlag.png";
-import vSit from "./assets/vSit.png";
-import aerial from "./assets/aerial.png";
 import BigCard from "./components/BigCard.jsx";
 import Stats from "./components/Stats.jsx";
 import tricks from "./data/tricks.js";
@@ -40,7 +33,7 @@ const App = () => {
                 <Welcome name="Matias"/>
                 <div className="flex justify-between items-center mt-6 p-5">
                     <h1 className="text-white text-2xl">Recent Progress</h1>
-                    <button className= "p-2 text-gray-400 bg-gray-700 rounded-[6px] text-[12px]" onClick={() => setSearchTerm("")}>View All</button>
+                    <button className= "p-2 text-gray-400 bg-gray-700 rounded-md text-[12px]" onClick={() => setSearchTerm("")}>View All</button>
                 </div>
                 <div className="flex flex-col gap-4 p-5">
                     <ul className="flex gap-4 flex-wrap flex-1 ">

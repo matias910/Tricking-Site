@@ -70,6 +70,7 @@ const tricks = [
         description: "Do a cartwheel without using your hands",
         steps: ["Step into it", "Kick your back leg", "Drive your chest sideways", "Land controlled"],
     },
-]
+];
 
 export default tricks;
+
